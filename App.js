@@ -62,10 +62,10 @@ function HomeScreen({navigation}) {
     <View style={mainContainer}>
       <ImageBackground source={require('./images/ocean.jpg')} style={imageCont}>
         <View style={titleCont}>
-          <Text style={titleText}>Lendela</Text>
+          <Text style={titleText}>Insurance - Ez</Text>
         </View>
         <View style={boxCont}>
-          <TextInput style={loginEmail} placeholder={'Username'} />
+          <TextInput style={loginEmail} placeholder={'Email'} />
 
           <TextInput
             placeholder={'Password'}
@@ -81,12 +81,12 @@ function HomeScreen({navigation}) {
               //     otherParam: 'anything you want here',
               //   });
               // }}
-              onPress={() => navigation.navigate('User Details 1')}>
+              onPress={() => navigation.navigate('Register')}>
               <Text style={loginText}>LOGIN</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={forgetPass}
-              onPress={() => navigation.navigate('User Details 1')}>
+              onPress={() => navigation.navigate('Register')}>
               <Text style={loginText}>Forget Password</Text>
             </TouchableOpacity>
           </View>
@@ -130,6 +130,7 @@ function UserName({route, navigation}) {
   const [isWeddingVisible, setWeddingVisibility] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isLoanPurpose, setLoanPurpose] = useState('');
+  const [isdate, setDate] = useState(new Date());
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -139,10 +140,10 @@ function UserName({route, navigation}) {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = date => {
-    console.warn('A date has been picked: ', date);
-    hideDatePicker();
-  };
+  // const handleConfirm = date => {
+  //   console.warn('A date has been picked: ', date);
+  //   hideDatePicker();
+  // };
 
   const showWeddingField = itemValue => {
     if (itemValue === 'wedding') {
@@ -152,6 +153,14 @@ function UserName({route, navigation}) {
       setWeddingVisibility(false);
       setLoanPurpose(itemValue);
     }
+  };
+  const onChange = selectedDate => {
+    const currentDate = selectedDate || isdate;
+    // setDatePickerVisibility(Platform.OS === 'ios');
+    setDatePickerVisibility(false);
+    setDate(currentDate);
+    console.warn('A date has been picked: ', currentDate);
+    // hideDatePicker();
   };
 
   const loanPurposeField = () => {
@@ -165,6 +174,8 @@ function UserName({route, navigation}) {
     userContH,
     loginConfirm,
     dateTimeText,
+    dropdownCont,
+    dateCont,
   } = styles;
   let data = [
     {
@@ -189,14 +200,31 @@ function UserName({route, navigation}) {
       value: 'Other',
     },
   ];
+
+  let loantenureData = [
+    {
+      value: '1 year',
+    },
+    {
+      value: '2 years',
+    },
+    {
+      value: '3years',
+    },
+  ];
   return (
     <ScrollView>
       <View style={nameCont}>
         <View style={namefillCont}>
-          <Dropdown label="Title" data={data} />
+          <Dropdown label="Title" data={data} containerStyle={dropdownCont} />
           <TextInput style={userDetailfill} placeholder={'First name'} />
           <TextInput style={userDetailfill} placeholder={'Last name'} />
-          <Dropdown label="Gender" data={genderData} />
+          <Dropdown
+            label="Gender"
+            data={genderData}
+            containerStyle={dropdownCont}
+            dropdownOffset={{top: 10, left: 0}}
+          />
           <View style={userContH}>
             {/* <TouchableOpacity
               style={{
@@ -209,19 +237,27 @@ function UserName({route, navigation}) {
               onPress={showDatepicker}>
               <Text>Date Picker</Text>
             </TouchableOpacity> */}
-            <Button title="Select Date" onPress={showDatePicker} />
+            <Button title="Select Birth Date" onPress={showDatePicker} />
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               mode="date"
-              onConfirm={handleConfirm}
+              onConfirm={onChange}
               onCancel={hideDatePicker}
+              // date={isdate}
             />
+            <Text style={dateCont}>
+              {moment.utc(isdate).format('MM/DD/YYYY')}
+            </Text>
           </View>
 
           <TextInput style={userDetailfill} placeholder={'Email'} />
           <TextInput style={userDetailfill} placeholder={'Phone No'} />
           <TextInput style={userDetailfill} placeholder={'Loan amount'} />
-          <Dropdown label="Loan tenure" data={genderData} />
+          <Dropdown
+            label="Loan tenure"
+            data={loantenureData}
+            dropdownOffset={{top: 10, left: 0}}
+          />
           <Picker
             selectedValue={isLoanPurpose}
             style={{height: 50, width: 100}}
@@ -267,7 +303,7 @@ function App() {
           options={{headerShown: false}}
         />
         <Stack.Screen name="Details" component={DetailsScreen} />
-        <Stack.Screen name="User Details 1" component={UserName} />
+        <Stack.Screen name="Register" component={UserName} />
         {/* <Stack.Screen name="Datepicker" component={Datepick} /> */}
       </Stack.Navigator>
     </NavigationContainer>
@@ -287,7 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // backgroundColor: 'white',
     alignItems: 'center',
-    height: '50%',
+    height: '60%',
     width: '90%', //opacity: 0.5,
     position: 'relative',
   },
@@ -317,7 +353,7 @@ const styles = StyleSheet.create({
     // position: 'relative',
   },
   titleCont: {
-    top: -60,
+    top: -30,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -333,39 +369,45 @@ const styles = StyleSheet.create({
     height: 44,
     padding: 10,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'white',
     marginBottom: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
+    // borderRadius: 20,
+    opacity: 0.8,
+    fontWeight: 'bold',
   },
   loginPass: {
     width: 200,
     height: 44,
     padding: 10,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'white',
     marginBottom: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
+    // borderRadius: 20,
+    opacity: 0.8,
+    fontWeight: 'bold',
   },
   loginConfirm: {
-    width: 80,
-    height: 44,
-    padding: 10,
+    width: 200,
+    height: 35,
+    padding: 5,
     borderColor: 'black',
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.5,
+    marginBottom: '5%',
+    paddingTop: 0,
   },
   forgetPass: {
-    width: '50%',
-    height: 44,
-    padding: 10,
+    width: 200,
+    height: 35,
+    padding: 5,
     borderColor: 'black',
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.5,
@@ -373,14 +415,15 @@ const styles = StyleSheet.create({
   loginAndforget: {
     flex: 1,
     width: '80%',
-    bottom: '20%',
-    flexDirection: 'row',
+    bottom: 10,
+    padding: 10,
+    flexDirection: 'column',
     // backgroundColor: 'red',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     // position: 'relative',
     position: 'absolute',
-    paddingLeft: '15%',
-    justifyContent: 'space-between',
+    // paddingLeft: '15%',
+    justifyContent: 'center',
   },
   loginText: {
     fontWeight: 'bold',
@@ -419,7 +462,7 @@ const styles = StyleSheet.create({
     height: 40,
     padding: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     //backgroundColor: 'red',
     // paddingRight: '4%',
   },
@@ -452,7 +495,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   header: {
-    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
   },
   button: {
@@ -465,6 +508,15 @@ const styles = StyleSheet.create({
   },
   iOsPicker: {
     flex: 1,
+  },
+  dropdownCont: {
+    width: '30%',
+  },
+  dateCont: {
+    //  backgroundColor: 'blue',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 10,
   },
 });
 
