@@ -131,7 +131,7 @@ function UserName({route, navigation}) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isLoanPurpose, setLoanPurpose] = useState('');
   const [isdate, setDate] = useState(new Date());
-
+  const [isChecked, setChecked] = useState(true);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -275,10 +275,18 @@ function UserName({route, navigation}) {
           {/* <TextInput style={userDetailfill} placeholder={'Wedding Date'} /> */}
           <View style={{flexDirection: 'row'}}>
             <CheckBox
-            // value={this.state.checked}
-            // onValueChange={() =>
-            //   this.setState({checked: !this.state.checked})
-            // }
+              value={isChecked}
+              // onValueChange={() => {
+              //   // this.setState({checked: !this.state.checked})
+              //   if (isChecked === false) {
+              //     setChecked(true);
+              //   } else if (isChecked === true) {
+              //     setChecked(false);
+              //   }
+              // }}
+              onValueChange={() => {
+                return setChecked(!isChecked);
+              }}
             />
             <Text style={{marginTop: 5}}>
               {' '}
